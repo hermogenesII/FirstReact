@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import FormSubmitModal from "./Modal/FormSubmitModal";
 import Toast from "./Toast/Toast";
 
-interface formData {
+interface FormData {
   name: string;
   email: string;
   password: string;
@@ -10,7 +10,7 @@ interface formData {
 }
 
 const Home: React.FC = () => {
-  const [formData, setFormData] = useState<formData>({
+  const [FormData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     password: "",
@@ -26,19 +26,44 @@ const Home: React.FC = () => {
 
   const openModal = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent the form from submitting directly
+    if (
+      !FormData.name ||
+      !FormData.email ||
+      !FormData.password ||
+      !FormData.dateOfBirth
+    ) {
+      alert("All fields are required!");
+      return;
+    }
+    if (!FormData.email.includes("@")) {
+      alert("Invalid email address!");
+      return;
+    }
     setIsModalOpen(true); // Open the confirmation modal
   };
 
-  const handleConfirmSubmit = () => {
-    console.log("Form Submitted", formData); // Submit the form when confirmed
-    setIsModalOpen(false); // Close the modal after submission
-    setShowToast(true);
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      dateOfBirth: "",
-    });
+  const handleConfirmSubmit = async () => {
+    try {
+      await new Promise((resolve, reject) =>
+        setTimeout(() => {
+          if (!openModal) reject("Something went wrong");
+          else resolve("Success");
+        }, 1000)
+      );
+      console.log("Form Submitted", FormData); // Submit the form when confirmed
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } catch (error) {
+      alert("Submission failed! Please try again.");
+    } finally {
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        dateOfBirth: "",
+      });
+      setIsModalOpen(false); // Close the modal after submission
+    }
   };
 
   const handleCancelSubmit = () => {
@@ -63,7 +88,7 @@ const Home: React.FC = () => {
               id="floatingName"
               name="name"
               placeholder="Name"
-              value={formData.name}
+              value={FormData.name}
               onChange={handleInput}
             />
             <label htmlFor="floatingName">Name</label>
@@ -75,7 +100,7 @@ const Home: React.FC = () => {
               id="floatingEmail"
               name="email"
               placeholder="Email"
-              value={formData.email}
+              value={FormData.email}
               onChange={handleInput}
             />
             <label htmlFor="floatingEmail">Email Address</label>
@@ -87,7 +112,7 @@ const Home: React.FC = () => {
               id="floatingPassword"
               name="password"
               placeholder="Password"
-              value={formData.password}
+              value={FormData.password}
               onChange={handleInput}
             />
             <label htmlFor="floatingPassword">Password</label>
@@ -99,7 +124,7 @@ const Home: React.FC = () => {
               id="floatingDoB"
               name="dateOfBirth"
               placeholder="Date of Birth"
-              value={formData.dateOfBirth}
+              value={FormData.dateOfBirth}
               onChange={handleInput}
             />
             <label htmlFor="floatingDoB">Date of Birth</label>
@@ -120,7 +145,7 @@ const Home: React.FC = () => {
 
         {/* Toast */}
         <Toast
-          toastMessage="Added Succesfully"
+          toastMessage="Added Successfully"
           showToast={showToast}
           onClose={handleToastClose}
         />

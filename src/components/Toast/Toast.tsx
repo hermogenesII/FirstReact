@@ -15,7 +15,7 @@ const Toast: React.FC<FormSubmitToast> = ({
   return (
     <>
       <div
-        className="toast align-items-center text-bg-primary border-0"
+        className="toast align-items-center text-bg-primary border-0 position-fixed top-0 start-50 translate-middle-x mt-3"
         role="alert"
         style={{ display: "block" }}
         aria-live="assertive"
